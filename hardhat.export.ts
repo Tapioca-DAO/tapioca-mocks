@@ -5,7 +5,6 @@ import '@nomicfoundation/hardhat-chai-matchers';
 import { HardhatUserConfig } from 'hardhat/config';
 import 'hardhat-deploy';
 import 'hardhat-contract-sizer';
-import '@primitivefi/hardhat-dodoc';
 import SDK from 'tapioca-sdk';
 import 'hardhat-tracer';
 import { HttpNetworkConfig } from 'hardhat/types';
@@ -42,9 +41,18 @@ const supportedChains = SDK.API.utils.getSupportedChains().reduce(
     {} as { [key in TNetwork]: HttpNetworkConfig },
 );
 const config: HardhatUserConfig & { dodoc?: any; typechain?: any } = {
-    SDK: { project: SDK.API.config.TAPIOCA_PROJECTS_NAME.TapiocaZ },
+    SDK: { project: 'tapioca-mocks' }, //TODO: replace with  SDK.API.config.TAPIOCA_PROJECTS_NAME.TapiocaMocks
     solidity: {
         compilers: [
+            {
+                version: '0.6.12',
+                settings: {
+                    optimizer: {
+                        enabled: true,
+                        runs: 200,
+                    },
+                },
+            },
             {
                 version: '0.8.18',
                 settings: {
@@ -92,7 +100,6 @@ const config: HardhatUserConfig & { dodoc?: any; typechain?: any } = {
         outDir: './typechain',
     },
     gasReporter: {},
-    dodoc: {},
     mocha: {
         timeout: 4000000,
     },
