@@ -113,36 +113,36 @@ contract MockSwapper {
     }
 
     function getOutputAmount(
-        uint256 /* tokenInId */,
-        uint256 /* shareIn */,
-        bytes calldata /* dexData */
-    ) external pure returns (uint256) {
+        SwapData calldata,
+        bytes calldata
+    ) external pure returns (uint256 amountOut) {
         return 0;
     }
 
     function getInputAmount(
-        uint256 /* tokenOutId */,
-        uint256 /* shareOut */,
-        bytes calldata /* dexData */
+        SwapData calldata,
+        bytes calldata
     ) external pure returns (uint256) {
         return 0;
     }
 
-    /// @notice swaps token in with token out
-    /// @dev returns both amount and shares
-    /// @param tokenOutId YieldBox asset id
-    /// @param to Receiver address
-    /// @param amountOutMin Minimum amount to be received
     function swap(
-        uint256 /* tokenInId */,
-        uint256 tokenOutId,
-        uint256 /* shareIn */,
-        address to,
+        SwapData calldata swapData,
         uint256 amountOutMin,
-        bytes calldata /* dexData */
+        address to,
+        bytes memory
     ) external returns (uint256 amountOut, uint256 shareOut) {
-        shareOut = yieldBox.toShare(tokenOutId, amountOutMin, true);
+        shareOut = yieldBox.toShare(
+            swapData.tokensData.tokenOutId,
+            amountOutMin,
+            true
+        );
         amountOut = amountOutMin;
-        yieldBox.transfer(address(this), to, tokenOutId, shareOut);
+        yieldBox.transfer(
+            address(this),
+            to,
+            swapData.tokensData.tokenOutId,
+            shareOut
+        );
     }
 }
