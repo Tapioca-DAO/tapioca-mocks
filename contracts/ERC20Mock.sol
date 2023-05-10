@@ -41,7 +41,7 @@ contract ERC20Mock is ERC20Permit, Ownable {
         _transfer(address(this), msg.sender, _amount);
     }
 
-    function freeMint(uint256 _val) external {
+    function freeMint(uint256 _val) public {
         require(_val <= mintLimit, "ERC20Mock: amount too big");
         require(
             mintedAt[msg.sender] + MINT_WINDOW <= block.timestamp,
