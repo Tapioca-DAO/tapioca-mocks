@@ -9,6 +9,31 @@ import "tapioca-sdk/dist/contracts/YieldBox/contracts/YieldBox.sol";
 contract MockSwapper {
     using BoringERC20 for IERC20;
 
+    struct SwapTokensData {
+        address tokenIn;
+        uint256 tokenInId;
+        address tokenOut;
+        uint256 tokenOutId;
+    }
+
+    struct SwapAmountData {
+        uint256 amountIn;
+        uint256 shareIn;
+        uint256 amountOut;
+        uint256 shareOut;
+    }
+
+    struct YieldBoxData {
+        bool withdrawFromYb;
+        bool depositToYb;
+    }
+
+    struct SwapData {
+        SwapTokensData tokensData;
+        SwapAmountData amountData;
+        YieldBoxData yieldBoxData;
+    }
+
     YieldBox private immutable yieldBox;
 
     constructor(YieldBox _yieldBox) {
@@ -16,36 +41,55 @@ contract MockSwapper {
     }
 
     function getOutputAmount(
-        uint256 /* tokenInId */,
-        uint256 /* shareIn */,
-        bytes calldata /* dexData */
+        SwapData calldata,
+        bytes calldata
     ) external pure returns (uint256) {
         return 0;
     }
 
     function getInputAmount(
-        uint256 /* tokenOutId */,
-        uint256 /* shareOut */,
-        bytes calldata /* dexData */
+        SwapData calldata,
+        bytes calldata
     ) external pure returns (uint256) {
         return 0;
     }
 
-    /// @notice swaps token in with token out
-    /// @dev returns both amount and shares
-    /// @param tokenOutId YieldBox asset id
-    /// @param to Receiver address
-    /// @param amountOutMin Minimum amount to be received
     function swap(
-        uint256 /* tokenInId */,
-        uint256 tokenOutId,
-        uint256 /* shareIn */,
-        address to,
+        SwapData calldata swapData,
         uint256 amountOutMin,
-        bytes calldata /* dexData */
+        address to,
+        bytes calldata
     ) external returns (uint256 amountOut, uint256 shareOut) {
-        shareOut = yieldBox.toShare(tokenOutId, amountOutMin, true);
+        shareOut = yieldBox.toShare(
+            swapData.tokensData.tokenOutId,
+            amountOutMin,
+            true
+        );
         amountOut = amountOutMin;
-        yieldBox.transfer(address(this), to, tokenOutId, shareOut);
+        yieldBox.transfer(
+            address(this),
+            to,
+            swapData.tokensData.tokenOutId,
+            shareOut
+        );
     }
+
+    //leverage interface support;
+    function buildSwapData(
+        address,
+        address,
+        uint256,
+        uint256,
+        bool,
+        bool
+    ) external view returns (SwapData memory) {}
+
+    function buildSwapData(
+        uint256,
+        uint256,
+        uint256,
+        uint256,
+        bool,
+        bool
+    ) external view returns (SwapData memory) {}
 }
