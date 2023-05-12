@@ -10,6 +10,11 @@ contract ERC20Mock is ERC20Permit, Ownable {
 
     uint8 private _decimals;
 
+    bool public hasMintRestrictions;
+
+    event Deposit(address indexed dst, uint256 wad);
+    event Withdrawal(address indexed src, uint256 wad);
+
     constructor(
         string memory _name,
         string memory _symbol,
@@ -23,6 +28,12 @@ contract ERC20Mock is ERC20Permit, Ownable {
         transferOwnership(_owner);
 
         _mint(address(this), _initialAmount);
+
+        hasMintRestrictions = true;
+    }
+
+    function toggleRestrictions() external onlyOwner {
+        hasMintRestrictions = !hasMintRestrictions;
     }
 
     function decimals() public view override returns (uint8) {
@@ -41,15 +52,33 @@ contract ERC20Mock is ERC20Permit, Ownable {
         _transfer(address(this), msg.sender, _amount);
     }
 
-    function freeMint(uint256 _val) external {
-        require(_val <= mintLimit, "ERC20Mock: amount too big");
-        require(
-            mintedAt[msg.sender] + MINT_WINDOW <= block.timestamp,
-            "ERC20Mock: too early"
-        );
+    function freeMint(uint256 _val) public {
+        if (hasMintRestrictions) {
+            require(_val <= mintLimit, "ERC20Mock: amount too big");
+            require(
+                mintedAt[msg.sender] + MINT_WINDOW <= block.timestamp,
+                "ERC20Mock: too early"
+            );
+        }
 
         mintedAt[msg.sender] = block.timestamp;
 
         _mint(msg.sender, _val);
     }
+
+    //WETH behaviour
+    function deposit() public payable {
+        _mint(msg.sender, msg.value);
+        emit Deposit(msg.sender, msg.value);
+    }
+
+    //WETH behaviour
+    function withdraw(uint256 wad) public {
+        require(balanceOf(msg.sender) >= wad, "Error");
+        _burn(msg.sender, wad);
+        payable(msg.sender).transfer(wad);
+        emit Withdrawal(msg.sender, wad);
+    }
+
+    receive() external payable {}
 }

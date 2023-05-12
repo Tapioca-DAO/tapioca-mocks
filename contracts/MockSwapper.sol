@@ -9,8 +9,6 @@ import "tapioca-sdk/dist/contracts/YieldBox/contracts/YieldBox.sol";
 contract MockSwapper {
     using BoringERC20 for IERC20;
 
-    YieldBox private immutable yieldBox;
-
     struct SwapTokensData {
         address tokenIn;
         uint256 tokenInId;
@@ -36,11 +34,48 @@ contract MockSwapper {
         YieldBoxData yieldBoxData;
     }
 
+    YieldBox private immutable yieldBox;
+
     constructor(YieldBox _yieldBox) {
         yieldBox = _yieldBox;
     }
 
     //Add more overloads if needed
+
+    function getOutputAmount(
+        SwapData calldata,
+        bytes calldata
+    ) external pure returns (uint256 amountOut) {
+        return 0;
+    }
+
+    function getInputAmount(
+        SwapData calldata,
+        bytes calldata
+    ) external pure returns (uint256) {
+        return 0;
+    }
+
+    function swap(
+        SwapData calldata swapData,
+        uint256 amountOutMin,
+        address to,
+        bytes memory
+    ) external returns (uint256 amountOut, uint256 shareOut) {
+        shareOut = yieldBox.toShare(
+            swapData.tokensData.tokenOutId,
+            amountOutMin,
+            true
+        );
+        amountOut = amountOutMin;
+        yieldBox.transfer(
+            address(this),
+            to,
+            swapData.tokensData.tokenOutId,
+            shareOut
+        );
+    }
+
     function buildSwapData(
         address tokenIn,
         address tokenOut,
@@ -110,39 +145,5 @@ contract MockSwapper {
         swapData.tokensData = swapTokenData;
         swapData.amountData = swapAmountData;
         swapData.yieldBoxData = swapYBData;
-    }
-
-    function getOutputAmount(
-        SwapData calldata,
-        bytes calldata
-    ) external pure returns (uint256 amountOut) {
-        return 0;
-    }
-
-    function getInputAmount(
-        SwapData calldata,
-        bytes calldata
-    ) external pure returns (uint256) {
-        return 0;
-    }
-
-    function swap(
-        SwapData calldata swapData,
-        uint256 amountOutMin,
-        address to,
-        bytes memory
-    ) external returns (uint256 amountOut, uint256 shareOut) {
-        shareOut = yieldBox.toShare(
-            swapData.tokensData.tokenOutId,
-            amountOutMin,
-            true
-        );
-        amountOut = amountOutMin;
-        yieldBox.transfer(
-            address(this),
-            to,
-            swapData.tokensData.tokenOutId,
-            shareOut
-        );
     }
 }
