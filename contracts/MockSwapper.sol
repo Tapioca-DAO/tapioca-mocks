@@ -40,10 +40,12 @@ contract MockSwapper {
         yieldBox = _yieldBox;
     }
 
+    //Add more overloads if needed
+
     function getOutputAmount(
         SwapData calldata,
         bytes calldata
-    ) external pure returns (uint256) {
+    ) external pure returns (uint256 amountOut) {
         return 0;
     }
 
@@ -58,7 +60,7 @@ contract MockSwapper {
         SwapData calldata swapData,
         uint256 amountOutMin,
         address to,
-        bytes calldata
+        bytes memory
     ) external returns (uint256 amountOut, uint256 shareOut) {
         shareOut = yieldBox.toShare(
             swapData.tokensData.tokenOutId,
