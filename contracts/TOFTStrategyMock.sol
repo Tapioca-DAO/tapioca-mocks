@@ -64,6 +64,7 @@ contract TOFTStrategyMock is BaseERC20Strategy, BoringOwnable, ReentrancyGuard {
     // *** PRIVATE FUNCTIONS *** //
     // ************************* //
     function _currentBalance() internal view override returns (uint256 amount) {
+        if(vaultAmount == 0) return 0;
         uint256 _compoundAmount = compoundAmount();
         return vaultAmount + _compoundAmount;
     }
