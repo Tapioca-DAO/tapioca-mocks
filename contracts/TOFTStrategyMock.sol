@@ -27,8 +27,6 @@ contract TOFTStrategyMock is BaseERC20Strategy, BoringOwnable, ReentrancyGuard {
         address _rewardToken
     ) BaseERC20Strategy(_yieldBox, _toft) {
         rewardToken = IERC20Mock(_rewardToken);
-
-        rewardToken.toggleRestrictions();
     }
 
     function name() external pure override returns (string memory name_) {
