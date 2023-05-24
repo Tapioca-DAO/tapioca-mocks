@@ -80,6 +80,11 @@ contract TOFTStrategyMock is BaseERC20Strategy, BoringOwnable, ReentrancyGuard {
         uint256 available = _currentBalance();
         require(available >= amount, "amount not valid");
         IERC20(contractAddress).safeTransfer(to, amount);
-        vaultAmount -= amount;
+
+        if (amount > vaultAmount) {
+            vaultAmount = 0;
+        } else {
+            vaultAmount -= amount;
+        }
     }
 }
