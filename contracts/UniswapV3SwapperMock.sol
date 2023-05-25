@@ -4,7 +4,6 @@ pragma solidity ^0.8.18;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./ERC20Mock.sol";
 
-
 contract UniswapV3SwapperMock {
     using SafeERC20 for IERC20;
 
@@ -33,7 +32,6 @@ contract UniswapV3SwapperMock {
         YieldBoxData yieldBoxData;
     }
 
-
     constructor(address) {}
 
     //Add more overloads if needed
@@ -58,10 +56,19 @@ contract UniswapV3SwapperMock {
         address,
         bytes memory
     ) external returns (uint256 amountOut, uint256 shareOut) {
-        IERC20(swapData.tokensData.tokenIn).safeTransferFrom(msg.sender, address(this), swapData.amountData.amountIn);
-        ERC20Mock(payable(swapData.tokensData.tokenOut)).freeMint(swapData.amountData.amountIn);
-        IERC20(swapData.tokensData.tokenOut).safeTransfer(msg.sender, swapData.amountData.amountIn);
-        return (swapData.amountData.amountIn,swapData.amountData.amountIn);
+        IERC20(swapData.tokensData.tokenIn).safeTransferFrom(
+            msg.sender,
+            address(this),
+            swapData.amountData.amountIn
+        );
+        ERC20Mock(payable(swapData.tokensData.tokenOut)).freeMint(
+            swapData.amountData.amountIn
+        );
+        IERC20(swapData.tokensData.tokenOut).safeTransfer(
+            msg.sender,
+            swapData.amountData.amountIn
+        );
+        return (swapData.amountData.amountIn, swapData.amountData.amountIn);
     }
 
     function buildSwapData(
