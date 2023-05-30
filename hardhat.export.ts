@@ -8,6 +8,7 @@ import 'hardhat-contract-sizer';
 import SDK from 'tapioca-sdk';
 import 'hardhat-tracer';
 import { HttpNetworkConfig } from 'hardhat/types';
+import { TAPIOCA_PROJECTS_NAME } from './gitsub_tapioca-sdk/src/api/config';
 
 dotenv.config();
 
@@ -41,7 +42,7 @@ const supportedChains = SDK.API.utils.getSupportedChains().reduce(
     {} as { [key in TNetwork]: HttpNetworkConfig },
 );
 const config: HardhatUserConfig & { dodoc?: any; typechain?: any } = {
-    SDK: { project: 'tapioca-mocks' }, //TODO: replace with  SDK.API.config.TAPIOCA_PROJECTS_NAME.TapiocaMocks
+    SDK: { project: TAPIOCA_PROJECTS_NAME.TapiocaMocks }, //TODO: replace with  SDK.API.config.TAPIOCA_PROJECTS_NAME.TapiocaMocks
     solidity: {
         compilers: [
             {
