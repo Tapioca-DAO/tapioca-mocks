@@ -57,15 +57,15 @@ contract UniswapV3SwapperMock {
         bytes memory data
     ) external returns (uint256 amountOut, uint256 shareOut) {
         bool isNonErc20Mock = false;
-        if(data.length > 0) {
-            isNonErc20Mock = abi.decode(data,(bool));
+        if (data.length > 0) {
+            isNonErc20Mock = abi.decode(data, (bool));
         }
         IERC20(swapData.tokensData.tokenIn).safeTransferFrom(
             msg.sender,
             address(this),
             swapData.amountData.amountIn
         );
-        if(!isNonErc20Mock) {
+        if (!isNonErc20Mock) {
             ERC20Mock(payable(swapData.tokensData.tokenOut)).freeMint(
                 swapData.amountData.amountIn
             );
