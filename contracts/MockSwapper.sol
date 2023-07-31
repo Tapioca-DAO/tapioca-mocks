@@ -62,29 +62,46 @@ contract MockSwapper {
         address to,
         bytes memory
     ) external returns (uint256 amountOut, uint256 shareOut) {
-        shareOut = yieldBox.toShare(
-            swapData.tokensData.tokenOutId,
-            amountOutMin,
-            true
-        );
         amountOut = amountOutMin;
-        yieldBox.transfer(
-            address(this),
-            to,
-            swapData.tokensData.tokenOutId,
-            shareOut
-        );
+
+        if (swapData.tokensData.tokenOutId > 0) { 
+            shareOut = yieldBox.toShare(
+                swapData.tokensData.tokenOutId,
+                amountOutMin,
+                true
+            );
+            yieldBox.transfer(
+                address(this),
+                to,
+                swapData.tokensData.tokenOutId,
+                shareOut
+            );
+        }
+        else {
+            shareOut = amountOut *1e8;
+            IERC20(swapData.tokensData.tokenOut).safeTransfer(to, amountOut);
+        }
     }
 
     function buildSwapData(
-        address,
-        address,
-        uint256,
-        uint256,
-        bool,
-        bool
+        address tokenIn,
+        address tokenOut,
+        uint256 amountIn,
+        uint256 shareIn,
+        bool withdrawFromYb,
+        bool depositToYb
     ) external pure returns (SwapData memory) {
-        revert("MockSwapper: ids are needed");
+        return
+            _buildSwapData(
+                tokenIn,
+                tokenOut,
+                0,
+                0,
+                amountIn,
+                shareIn,
+                withdrawFromYb,
+                depositToYb
+            );
     }
 
     function buildSwapData(
