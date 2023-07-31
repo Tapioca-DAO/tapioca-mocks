@@ -77,24 +77,14 @@ contract MockSwapper {
     }
 
     function buildSwapData(
-        address tokenIn,
-        address tokenOut,
-        uint256 amountIn,
-        uint256 shareIn,
-        bool withdrawFromYb,
-        bool depositToYb
+        address,
+        address,
+        uint256,
+        uint256,
+        bool,
+        bool
     ) external pure returns (SwapData memory) {
-        return
-            _buildSwapData(
-                tokenIn,
-                tokenOut,
-                0,
-                0,
-                amountIn,
-                shareIn,
-                withdrawFromYb,
-                depositToYb
-            );
+        revert("MockSwapper: ids are needed");
     }
 
     function buildSwapData(
