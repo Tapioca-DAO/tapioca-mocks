@@ -64,7 +64,7 @@ contract MockSwapper {
     ) external returns (uint256 amountOut, uint256 shareOut) {
         amountOut = amountOutMin;
 
-        if (swapData.tokensData.tokenOutId > 0) { 
+        if (swapData.tokensData.tokenOutId > 0) {
             shareOut = yieldBox.toShare(
                 swapData.tokensData.tokenOutId,
                 amountOutMin,
@@ -76,9 +76,8 @@ contract MockSwapper {
                 swapData.tokensData.tokenOutId,
                 shareOut
             );
-        }
-        else {
-            shareOut = amountOut *1e8;
+        } else {
+            shareOut = amountOut * 1e8;
             IERC20(swapData.tokensData.tokenOut).safeTransfer(to, amountOut);
         }
     }
