@@ -62,18 +62,24 @@ contract MockSwapper {
         address to,
         bytes memory
     ) external returns (uint256 amountOut, uint256 shareOut) {
-        shareOut = yieldBox.toShare(
-            swapData.tokensData.tokenOutId,
-            amountOutMin,
-            true
-        );
         amountOut = amountOutMin;
-        yieldBox.transfer(
-            address(this),
-            to,
-            swapData.tokensData.tokenOutId,
-            shareOut
-        );
+
+        if (swapData.tokensData.tokenOutId > 0) {
+            shareOut = yieldBox.toShare(
+                swapData.tokensData.tokenOutId,
+                amountOutMin,
+                true
+            );
+            yieldBox.transfer(
+                address(this),
+                to,
+                swapData.tokensData.tokenOutId,
+                shareOut
+            );
+        } else {
+            shareOut = amountOut * 1e8;
+            IERC20(swapData.tokensData.tokenOut).safeTransfer(to, amountOut);
+        }
     }
 
     function buildSwapData(
