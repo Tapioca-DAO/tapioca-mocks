@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
 
-
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
 
 contract TwTwapMock {
@@ -17,7 +16,7 @@ contract TwTwapMock {
         return i;
     }
 
-     function distributeReward(
+    function distributeReward(
         uint256 _rewardTokenId,
         uint256 _amount
     ) external {
