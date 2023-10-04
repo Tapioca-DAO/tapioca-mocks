@@ -16,6 +16,7 @@ contract MarketLiquidationReceiverMock {
     function onCollateralReceiver(
         address,
         address,
+        address,
         uint256,
         uint256 amountToReceive,
         bytes calldata
