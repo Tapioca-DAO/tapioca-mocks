@@ -18,9 +18,9 @@ contract MarketLiquidationReceiverMock {
         address,
         address,
         uint256,
-        uint256 amountToReceive,
-        bytes calldata
+        bytes calldata data
     ) external returns (bool) {
+        uint256 amountToReceive = abi.decode(data,(uint256));
         asset.safeTransfer(msg.sender, amountToReceive);
         return true;
     }
