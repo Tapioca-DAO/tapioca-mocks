@@ -23,6 +23,17 @@ interface IStargateRouterMock {
     ) external payable;
 }
 
+interface IToftMock {
+    function sgReceive(
+        uint16,
+        bytes memory,
+        uint,
+        address,
+        uint amountLD,
+        bytes memory
+    ) external;
+}
+
 contract StargateRouterMock is IStargateRouterMock {
     IERC20 public token;
 
@@ -38,7 +49,7 @@ contract StargateRouterMock is IStargateRouterMock {
         uint256 _amountLD,
         uint256,
         IStargateRouterMock.lzTxObj memory,
-        bytes calldata _to,
+        bytes memory _to,
         bytes calldata
     ) external payable override {
         require(_amountLD > 0, "Stargate: cannot swap 0");
@@ -46,10 +57,16 @@ contract StargateRouterMock is IStargateRouterMock {
             _refundAddress != address(0x0),
             "Stargate: _refundAddress cannot be 0x0"
         );
-        bytes32 converted = bytes32(_to[:32]);
-        address tempAddress = address(uint160(uint256(converted)));
+
+        address tempAddress;
+        assembly {
+            let offset := add(_to, 20)
+            tempAddress := mload(offset)
+        }
 
         token.transferFrom(msg.sender, address(this), _amountLD);
         token.transfer(tempAddress, _amountLD);
+
+        IToftMock(tempAddress).sgReceive(0, "0x", 0, address(0), _amountLD, "0x");
     }
 }
