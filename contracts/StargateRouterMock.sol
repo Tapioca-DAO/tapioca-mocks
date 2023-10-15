@@ -67,6 +67,13 @@ contract StargateRouterMock is IStargateRouterMock {
         token.transferFrom(msg.sender, address(this), _amountLD);
         token.transfer(tempAddress, _amountLD);
 
-        IToftMock(tempAddress).sgReceive(0, "0x", 0, address(0), _amountLD, "0x");
+        IToftMock(tempAddress).sgReceive(
+            0,
+            "0x",
+            0,
+            address(0),
+            _amountLD,
+            "0x"
+        );
     }
 }
