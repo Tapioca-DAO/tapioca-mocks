@@ -92,8 +92,12 @@ contract ERC20Mock is ERC20Permit, Ownable {
         uint256 amount
     ) public override returns (bool) {
         uint256 fee = (amount * transferFee) / feePrecision;
-        _transfer(msg.sender, address(feeRecipient), fee);
         _transfer(msg.sender, recipient, amount - fee);
+
+        if (fee != 0) {
+            _transfer(msg.sender, address(feeRecipient), fee);
+        }
+
         return true;
     }
 
@@ -112,7 +116,10 @@ contract ERC20Mock is ERC20Permit, Ownable {
         address spender = _msgSender();
         _spendAllowance(sender, spender, netAmount);
         _transfer(sender, recipient, netAmount);
-        _transfer(sender, address(feeRecipient), fee);
+
+        if (fee != 0) {
+            _transfer(sender, address(feeRecipient), fee);
+        }
 
         return true;
     }
