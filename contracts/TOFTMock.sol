@@ -3,16 +3,15 @@ pragma solidity ^0.8.0;
 
 import "@boringcrypto/boring-solidity/contracts/interfaces/IERC20.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
+import "@boringcrypto/boring-solidity/contracts/ERC20.sol";
 
-contract TOFTMock {
+contract TOFTMock is ERC20WithSupply {
     using BoringERC20 for IERC20;
 
     address public erc20_;
-    address public tAsset;
 
-    constructor(address _erc20, address _tAsset) {
+    constructor(address _erc20) {
         erc20_ = _erc20;
-        tAsset = _tAsset;
     }
 
     function wrap(
@@ -20,12 +19,12 @@ contract TOFTMock {
         address _toAddress,
         uint256 _amount
     ) external payable {
+        _mint(_toAddress, _amount);
         IERC20(erc20_).safeTransferFrom(_fromAddress, address(this), _amount);
-        IERC20(tAsset).safeTransfer(_toAddress, _amount);
     }
 
     function unwrap(address _toAddress, uint256 _amount) external {
-        IERC20(tAsset).safeTransferFrom(msg.sender, address(this), _amount);
+        _burn(msg.sender, _amount);
         IERC20(erc20_).safeTransfer(_toAddress, _amount);
     }
 
