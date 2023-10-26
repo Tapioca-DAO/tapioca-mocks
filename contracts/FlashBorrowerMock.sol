@@ -86,12 +86,16 @@ contract FlashBorrowerMock is IERC3156FlashBorrowerMock {
     }
 
     function approveRepayment(address token, uint256 amount) public {
-        uint256 _allowance = IERC20(token).allowance(
+        uint256 _allowance = IERC20(address(lender)).allowance(
             address(this),
             address(lender)
         );
         uint256 _fee = lender.flashFee(token, amount);
         uint256 _repayment = amount + _fee;
         IERC20(token).approve(address(lender), _allowance + _repayment);
+        // IERC20(address(lender)).approve(
+        //     address(lender),
+        //     _allowance + _repayment
+        // );
     }
 }
