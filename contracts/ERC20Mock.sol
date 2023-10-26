@@ -12,6 +12,10 @@ contract ERC20Mock is ERC20Permit, Ownable {
 
     bool public hasMintRestrictions;
 
+    uint32 public transferFee;
+    uint32 constant feePrecision = 1e5;
+    address public feeRecipient = address(0x0);
+
     event Deposit(address indexed dst, uint256 wad);
     event Withdrawal(address indexed src, uint256 wad);
 
@@ -66,18 +70,69 @@ contract ERC20Mock is ERC20Permit, Ownable {
         _mint(msg.sender, _val);
     }
 
-    //WETH behaviour
+    //WETH behavior
     function deposit() public payable {
         _mint(msg.sender, msg.value);
         emit Deposit(msg.sender, msg.value);
     }
 
-    //WETH behaviour
+    //WETH behavior
     function withdraw(uint256 wad) public {
         require(balanceOf(msg.sender) >= wad, "Error");
         _burn(msg.sender, wad);
         payable(msg.sender).transfer(wad);
         emit Withdrawal(msg.sender, wad);
+    }
+
+    /// @notice ERC20 transfer override to include a transfer fee
+    /// @param recipient The address to transfer to
+    /// @param amount The amount to transfer
+    function transfer(
+        address recipient,
+        uint256 amount
+    ) public override returns (bool) {
+        uint256 fee = (amount * transferFee) / feePrecision;
+        _transfer(msg.sender, recipient, amount - fee);
+
+        if (fee != 0) {
+            _transfer(msg.sender, address(feeRecipient), fee);
+        }
+
+        return true;
+    }
+
+    /// @notice ERC20 transferFrom override to include a transfer fee
+    /// @param sender The address to transfer from
+    /// @param recipient The address to transfer to
+    /// @param amount The amount to transfer
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) public override returns (bool) {
+        uint256 fee = (amount * transferFee) / feePrecision;
+        uint256 netAmount = amount - fee;
+
+        address spender = _msgSender();
+        _spendAllowance(sender, spender, netAmount);
+        _transfer(sender, recipient, netAmount);
+
+        if (fee != 0) {
+            _transfer(sender, address(feeRecipient), fee);
+        }
+
+        return true;
+    }
+
+    /// @notice Set the transfer fee
+    /// @param _fee The new transfer fee
+    function setTransferFee(uint32 _fee) external onlyOwner {
+        require(_fee < feePrecision, "ERC20Mock: fee too high");
+        transferFee = _fee;
+    }
+
+    function setFeeRecipient(address _feeRecipient) external onlyOwner {
+        feeRecipient = _feeRecipient;
     }
 
     receive() external payable {}
