@@ -44,4 +44,6 @@ contract TOFTMock is ERC20WithSupply {
     function erc20() external view returns (address) {
         return erc20_;
     }
+
+    receive() external payable {}
 }
