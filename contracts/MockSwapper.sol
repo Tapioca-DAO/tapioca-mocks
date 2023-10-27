@@ -160,4 +160,6 @@ contract MockSwapper {
         swapData.amountData = swapAmountData;
         swapData.yieldBoxData = swapYBData;
     }
+
+    receive() external payable {}
 }
