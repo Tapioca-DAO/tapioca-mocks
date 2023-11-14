@@ -31,6 +31,11 @@ contract BalancerVaultMock {
         bytes userData;
     }
 
+    // this normally is available in the Balancer Pool contract
+    function getPoolId() external pure returns (bytes32) {
+        return 0;
+    }
+
     function swap(
         SingleSwap memory singleSwap,
         FundManagement memory,
