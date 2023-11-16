@@ -61,7 +61,7 @@ contract MockSwapper {
         uint256 amountOutMin,
         address to,
         bytes memory
-    ) external returns (uint256 amountOut, uint256 shareOut) {
+    ) external payable returns (uint256 amountOut, uint256 shareOut) {
         amountOut = amountOutMin;
 
         if (swapData.tokensData.tokenOutId > 0) {
