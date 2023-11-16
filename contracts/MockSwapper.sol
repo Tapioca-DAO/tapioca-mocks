@@ -78,7 +78,15 @@ contract MockSwapper {
             );
         } else {
             shareOut = amountOut * 1e8;
-            IERC20(swapData.tokensData.tokenOut).safeTransfer(to, amountOut);
+            if (swapData.tokensData.tokenOut != address(0)) {
+                IERC20(swapData.tokensData.tokenOut).safeTransfer(
+                    to,
+                    amountOut
+                );
+            } else {
+                (bool sent, ) = to.call{value: amountOut}("");
+                require(sent, "MockSwapper: failed to transfer ETH");
+            }
         }
     }
 
@@ -152,4 +160,6 @@ contract MockSwapper {
         swapData.amountData = swapAmountData;
         swapData.yieldBoxData = swapYBData;
     }
+
+    receive() external payable {}
 }

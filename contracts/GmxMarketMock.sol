@@ -1,0 +1,121 @@
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.18;
+
+import "@boringcrypto/boring-solidity/contracts/ERC20.sol";
+import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
+
+contract GmxMarketMock is ERC20WithSupply {
+    using BoringERC20 for IERC20;
+
+    struct CreateDepositParams {
+        address receiver;
+        address callbackContract;
+        address uiFeeReceiver;
+        address market;
+        address initialLongToken;
+        address initialShortToken;
+        address[] longTokenSwapPath;
+        address[] shortTokenSwapPath;
+        uint256 minMarketTokens;
+        bool shouldUnwrapNativeToken;
+        uint256 executionFee;
+        uint256 callbackGasLimit;
+    }
+    struct CreateWithdrawalParams {
+        address receiver;
+        address callbackContract;
+        address uiFeeReceiver;
+        address market;
+        address[] longTokenSwapPath;
+        address[] shortTokenSwapPath;
+        uint256 minLongTokenAmount;
+        uint256 minShortTokenAmount;
+        bool shouldUnwrapNativeToken;
+        uint256 executionFee;
+        uint256 callbackGasLimit;
+    }
+
+    address public weth;
+    address public usdc;
+    address public lp;
+
+    constructor(address _weth, address _usdc, address _lp) {
+        weth = _weth;
+        usdc = _usdc;
+        lp = _lp;
+    }
+
+    function symbol() external pure returns (string memory) {
+        return "GM market";
+    }
+
+    function name() external pure returns (string memory) {
+        return "GM";
+    }
+
+    function decimals() external pure returns (uint8) {
+        return 18;
+    }
+
+    function sendWnt(address receiver, uint256 amount) external payable {}
+
+    function sendTokens(
+        address token,
+        address receiver,
+        uint256 amount
+    ) external payable {
+        IERC20(token).safeTransferFrom(msg.sender, receiver, amount);
+    }
+
+    function createDeposit(
+        CreateDepositParams calldata params
+    ) external payable returns (bytes32) {
+        IERC20(lp).safeTransfer(params.receiver, params.minMarketTokens);
+        return "0x";
+    }
+
+    function createWithdrawal(
+        CreateWithdrawalParams calldata params
+    ) external payable returns (bytes32) {
+        IERC20(weth).safeTransfer(params.receiver, params.minLongTokenAmount);
+        IERC20(usdc).safeTransfer(params.receiver, params.minShortTokenAmount);
+        IERC20(lp).safeTransferFrom(
+            msg.sender,
+            address(this),
+            balanceOf[msg.sender]
+        );
+        return "0x";
+    }
+
+    function multicall(
+        bytes[] calldata data
+    ) external payable returns (bytes[] memory results) {
+        results = new bytes[](data.length);
+
+        for (uint256 i; i < data.length; i++) {
+            (bool success, bytes memory result) = address(this).delegatecall(
+                data[i]
+            );
+
+            require(success, _getRevertMsg(result));
+
+            results[i] = result;
+        }
+
+        return results;
+    }
+
+    function _getRevertMsg(
+        bytes memory _returnData
+    ) internal pure returns (string memory) {
+        if (_returnData.length > 1000) return "reason too long";
+        // If the _res length is less than 68, then the transaction failed silently (without a revert message)
+        if (_returnData.length < 68) return "no return data";
+        // solhint-disable-next-line no-inline-assembly
+        assembly {
+            // Slice the sighash.
+            _returnData := add(_returnData, 0x04)
+        }
+        return abi.decode(_returnData, (string)); // All that remains is the revert string
+    }
+}
