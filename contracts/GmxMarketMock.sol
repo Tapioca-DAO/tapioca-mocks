@@ -148,6 +148,6 @@ contract GmxMarketMock is ERC20WithSupply {
     }
 
     function glpManager() external view returns (address) {
-        return address(glp); //random address
+        return address(this); //in a production env you need to approve glpManager address
     }
 }
