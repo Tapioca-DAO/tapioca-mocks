@@ -94,9 +94,7 @@ contract MockSwapper {
         address tokenIn,
         address tokenOut,
         uint256 amountIn,
-        uint256 shareIn,
-        bool withdrawFromYb,
-        bool depositToYb
+        uint256 shareIn
     ) external pure returns (SwapData memory) {
         return
             _buildSwapData(
@@ -106,8 +104,8 @@ contract MockSwapper {
                 0,
                 amountIn,
                 shareIn,
-                withdrawFromYb,
-                depositToYb
+                false,
+                false,
             );
     }
 
