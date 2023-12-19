@@ -38,6 +38,7 @@ contract GmxMarketMock is ERC20WithSupply {
     address public weth;
     address public usdc;
     address public lp;
+    address public glp;
 
     constructor(address _weth, address _usdc, address _lp) {
         weth = _weth;
@@ -117,5 +118,36 @@ contract GmxMarketMock is ERC20WithSupply {
             _returnData := add(_returnData, 0x04)
         }
         return abi.decode(_returnData, (string)); // All that remains is the revert string
+    }
+
+    //router mocks
+    function setGlp(address _glp) external {
+        glp = _glp;
+    }
+
+    function mintAndStakeGlp(
+        address _token,
+        uint256 _amount,
+        uint256,
+        uint256
+    ) external returns (uint256) {
+        IERC20(_token).safeTransferFrom(msg.sender, address(this), _amount);
+        IERC20(glp).safeTransfer(msg.sender, _amount);
+        return _amount;
+    }
+
+    function unstakeAndRedeemGlp(
+        address _tokenOut,
+        uint256 _glpAmount,
+        uint256,
+        address _receiver
+    ) external returns (uint256) {
+        IERC20(glp).safeTransferFrom(msg.sender, address(this), _glpAmount);
+        IERC20(_tokenOut).safeTransfer(_receiver, _glpAmount);
+        return _glpAmount;
+    }
+
+    function glpManager() external view returns (address) {
+        return address(this); //in a production env you need to approve glpManager address
     }
 }
