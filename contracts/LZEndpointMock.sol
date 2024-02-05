@@ -127,6 +127,11 @@ contract LZEndpointMock is ILayerZeroEndpoint {
         defaultAdapterParams = LzLib.buildDefaultAdapterParams(200000);
     }
 
+    function setDelegate(address _delegate) external {}
+    function eid() external view returns(uint32) {
+        return uint32(mockChainId);
+    }
+
     // ------------------------------ ILayerZeroEndpoint Functions ------------------------------
     function send(
         uint16 _chainId,
