@@ -126,6 +126,7 @@ contract LZEndpointMock is ILayerZeroEndpoint {
         oracleFee = 1e16;
         defaultAdapterParams = LzLib.buildDefaultAdapterParams(200000);
     }
+    function setDelegate(address _delegate) external {}
 
     // ------------------------------ ILayerZeroEndpoint Functions ------------------------------
     function send(
