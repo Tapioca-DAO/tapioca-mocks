@@ -4,7 +4,7 @@ pragma solidity ^0.8.18;
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
 
 interface IAsset {
-    // solhint-disable-previous-line no-empty-blocks
+// solhint-disable-previous-line no-empty-blocks
 }
 
 contract BalancerVaultMock {
@@ -36,21 +36,13 @@ contract BalancerVaultMock {
         return 0;
     }
 
-    function swap(
-        SingleSwap memory singleSwap,
-        FundManagement memory,
-        uint256,
-        uint256
-    ) external payable returns (uint256 amountCalculated) {
-        IERC20(address(singleSwap.assetIn)).safeTransferFrom(
-            msg.sender,
-            address(this),
-            singleSwap.amount
-        );
-        IERC20(address(singleSwap.assetOut)).safeTransfer(
-            msg.sender,
-            singleSwap.amount
-        );
+    function swap(SingleSwap memory singleSwap, FundManagement memory, uint256, uint256)
+        external
+        payable
+        returns (uint256 amountCalculated)
+    {
+        IERC20(address(singleSwap.assetIn)).safeTransferFrom(msg.sender, address(this), singleSwap.amount);
+        IERC20(address(singleSwap.assetOut)).safeTransfer(msg.sender, singleSwap.amount);
         return singleSwap.amount;
     }
 }

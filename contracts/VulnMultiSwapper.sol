@@ -8,17 +8,7 @@ interface IPenroseMock {
 }
 
 contract VulnMultiSwapper {
-    function counterfeitSwap(
-        IPenroseMock penrose,
-        uint256 assetId,
-        address target
-    ) public {
-        penrose.yieldBox().withdraw(
-            assetId,
-            target,
-            msg.sender,
-            penrose.yieldBox().amountOf(target, assetId),
-            0
-        );
+    function counterfeitSwap(IPenroseMock penrose, uint256 assetId, address target) public {
+        penrose.yieldBox().withdraw(assetId, target, msg.sender, penrose.yieldBox().amountOf(target, assetId), 0);
     }
 }

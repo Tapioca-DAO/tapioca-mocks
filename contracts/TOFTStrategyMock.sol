@@ -21,11 +21,7 @@ contract TOFTStrategyMock is BaseERC20Strategy, BoringOwnable, ReentrancyGuard {
     IERC20Mock public rewardToken;
     uint256 public vaultAmount;
 
-    constructor(
-        IYieldBox _yieldBox,
-        address _toft,
-        address _rewardToken
-    ) BaseERC20Strategy(_yieldBox, _toft) {
+    constructor(IYieldBox _yieldBox, address _toft, address _rewardToken) BaseERC20Strategy(_yieldBox, _toft) {
         rewardToken = IERC20Mock(_rewardToken);
     }
 
@@ -33,12 +29,7 @@ contract TOFTStrategyMock is BaseERC20Strategy, BoringOwnable, ReentrancyGuard {
         return "TOFTStrategyMock";
     }
 
-    function description()
-        external
-        pure
-        override
-        returns (string memory description_)
-    {
+    function description() external pure override returns (string memory description_) {
         return "TOFTStrategyMock";
     }
 
@@ -73,10 +64,7 @@ contract TOFTStrategyMock is BaseERC20Strategy, BoringOwnable, ReentrancyGuard {
         vaultAmount += amount;
     }
 
-    function _withdraw(
-        address to,
-        uint256 amount
-    ) internal override nonReentrant {
+    function _withdraw(address to, uint256 amount) internal override nonReentrant {
         uint256 available = _currentBalance();
         require(available >= amount, "amount not valid");
         IERC20(contractAddress).safeTransfer(to, amount);

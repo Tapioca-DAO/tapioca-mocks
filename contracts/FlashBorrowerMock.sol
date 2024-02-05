@@ -5,33 +5,24 @@ import "@boringcrypto/boring-solidity/contracts/ERC20.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
 
 interface IERC3156FlashBorrowerMock {
-    function onFlashLoan(
-        address initiator,
-        address token,
-        uint256 amount,
-        uint256 fee,
-        bytes calldata data
-    ) external returns (bytes32);
+    function onFlashLoan(address initiator, address token, uint256 amount, uint256 fee, bytes calldata data)
+        external
+        returns (bytes32);
 }
 
 interface IERC3156FlashLenderMock {
     function maxFlashLoan(address token) external view returns (uint256);
 
-    function flashFee(
-        address token,
-        uint256 amount
-    ) external view returns (uint256);
+    function flashFee(address token, uint256 amount) external view returns (uint256);
 
-    function flashLoan(
-        IERC3156FlashBorrowerMock receiver,
-        address token,
-        uint256 amount,
-        bytes calldata data
-    ) external returns (bool);
+    function flashLoan(IERC3156FlashBorrowerMock receiver, address token, uint256 amount, bytes calldata data)
+        external
+        returns (bool);
 }
 
 contract FlashMaliciousBorrowerMock is IERC3156FlashBorrowerMock {
     using BoringERC20 for IERC20;
+
     IERC3156FlashLenderMock lender;
 
     constructor(IERC3156FlashLenderMock _lender) {
@@ -39,13 +30,12 @@ contract FlashMaliciousBorrowerMock is IERC3156FlashBorrowerMock {
     }
 
     /// @dev ERC-3156 Flash loan callback
-    function onFlashLoan(
-        address initiator,
-        address,
-        uint256,
-        uint256,
-        bytes calldata
-    ) external view override returns (bytes32) {
+    function onFlashLoan(address initiator, address, uint256, uint256, bytes calldata)
+        external
+        view
+        override
+        returns (bytes32)
+    {
         require(msg.sender == address(lender), "FlashBorrower: untrusted");
         require(initiator == address(this), "FlashBorrower: not the initiator");
         //do stuff here
@@ -60,6 +50,7 @@ contract FlashMaliciousBorrowerMock is IERC3156FlashBorrowerMock {
 
 contract FlashBorrowerMock is IERC3156FlashBorrowerMock {
     using BoringERC20 for IERC20;
+
     IERC3156FlashLenderMock lender;
 
     constructor(IERC3156FlashLenderMock _lender) {
@@ -67,13 +58,12 @@ contract FlashBorrowerMock is IERC3156FlashBorrowerMock {
     }
 
     /// @dev ERC-3156 Flash loan callback
-    function onFlashLoan(
-        address initiator,
-        address,
-        uint256,
-        uint256,
-        bytes calldata
-    ) external view override returns (bytes32) {
+    function onFlashLoan(address initiator, address, uint256, uint256, bytes calldata)
+        external
+        view
+        override
+        returns (bytes32)
+    {
         require(msg.sender == address(lender), "FlashBorrower: untrusted");
         require(initiator == address(this), "FlashBorrower: not the initiator");
         //do stuff here
@@ -86,10 +76,7 @@ contract FlashBorrowerMock is IERC3156FlashBorrowerMock {
     }
 
     function approveRepayment(address token, uint256 amount) public {
-        uint256 _allowance = IERC20(address(lender)).allowance(
-            address(this),
-            address(lender)
-        );
+        uint256 _allowance = IERC20(address(lender)).allowance(address(this), address(lender));
         uint256 _fee = lender.flashFee(token, amount);
         uint256 _repayment = amount + _fee;
         IERC20(token).approve(address(lender), _allowance + _repayment);

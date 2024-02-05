@@ -29,10 +29,9 @@ contract LQSingularityMock {
         assetId = _assetId;
     }
 
-    function initLq(
-        ILiquidationQueueMock liquidationQueue,
-        ILiquidationQueueMock.LiquidationQueueMeta calldata lqMeta
-    ) external {
+    function initLq(ILiquidationQueueMock liquidationQueue, ILiquidationQueueMock.LiquidationQueueMeta calldata lqMeta)
+        external
+    {
         liquidationQueue.init(lqMeta, address(this));
     }
 }

@@ -21,6 +21,7 @@ contract GmxMarketMock is ERC20WithSupply {
         uint256 executionFee;
         uint256 callbackGasLimit;
     }
+
     struct CreateWithdrawalParams {
         address receiver;
         address callbackContract;
@@ -60,43 +61,27 @@ contract GmxMarketMock is ERC20WithSupply {
 
     function sendWnt(address receiver, uint256 amount) external payable {}
 
-    function sendTokens(
-        address token,
-        address receiver,
-        uint256 amount
-    ) external payable {
+    function sendTokens(address token, address receiver, uint256 amount) external payable {
         IERC20(token).safeTransferFrom(msg.sender, receiver, amount);
     }
 
-    function createDeposit(
-        CreateDepositParams calldata params
-    ) external payable returns (bytes32) {
+    function createDeposit(CreateDepositParams calldata params) external payable returns (bytes32) {
         IERC20(lp).safeTransfer(params.receiver, params.minMarketTokens);
         return "0x";
     }
 
-    function createWithdrawal(
-        CreateWithdrawalParams calldata params
-    ) external payable returns (bytes32) {
+    function createWithdrawal(CreateWithdrawalParams calldata params) external payable returns (bytes32) {
         IERC20(weth).safeTransfer(params.receiver, params.minLongTokenAmount);
         IERC20(usdc).safeTransfer(params.receiver, params.minShortTokenAmount);
-        IERC20(lp).safeTransferFrom(
-            msg.sender,
-            address(this),
-            balanceOf[msg.sender]
-        );
+        IERC20(lp).safeTransferFrom(msg.sender, address(this), balanceOf[msg.sender]);
         return "0x";
     }
 
-    function multicall(
-        bytes[] calldata data
-    ) external payable returns (bytes[] memory results) {
+    function multicall(bytes[] calldata data) external payable returns (bytes[] memory results) {
         results = new bytes[](data.length);
 
         for (uint256 i; i < data.length; i++) {
-            (bool success, bytes memory result) = address(this).delegatecall(
-                data[i]
-            );
+            (bool success, bytes memory result) = address(this).delegatecall(data[i]);
 
             require(success, _getRevertMsg(result));
 
@@ -106,9 +91,7 @@ contract GmxMarketMock is ERC20WithSupply {
         return results;
     }
 
-    function _getRevertMsg(
-        bytes memory _returnData
-    ) internal pure returns (string memory) {
+    function _getRevertMsg(bytes memory _returnData) internal pure returns (string memory) {
         if (_returnData.length > 1000) return "reason too long";
         // If the _res length is less than 68, then the transaction failed silently (without a revert message)
         if (_returnData.length < 68) return "no return data";
@@ -125,23 +108,16 @@ contract GmxMarketMock is ERC20WithSupply {
         glp = _glp;
     }
 
-    function mintAndStakeGlp(
-        address _token,
-        uint256 _amount,
-        uint256,
-        uint256
-    ) external returns (uint256) {
+    function mintAndStakeGlp(address _token, uint256 _amount, uint256, uint256) external returns (uint256) {
         IERC20(_token).safeTransferFrom(msg.sender, address(this), _amount);
         IERC20(glp).safeTransfer(msg.sender, _amount);
         return _amount;
     }
 
-    function unstakeAndRedeemGlp(
-        address _tokenOut,
-        uint256 _glpAmount,
-        uint256,
-        address _receiver
-    ) external returns (uint256) {
+    function unstakeAndRedeemGlp(address _tokenOut, uint256 _glpAmount, uint256, address _receiver)
+        external
+        returns (uint256)
+    {
         IERC20(glp).safeTransferFrom(msg.sender, address(this), _glpAmount);
         IERC20(_tokenOut).safeTransfer(_receiver, _glpAmount);
         return _glpAmount;

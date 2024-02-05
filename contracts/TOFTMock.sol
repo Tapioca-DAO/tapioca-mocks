@@ -14,18 +14,10 @@ contract TOFTMock is ERC20WithSupply {
         erc20_ = _erc20;
     }
 
-    function wrap(
-        address _fromAddress,
-        address _toAddress,
-        uint256 _amount
-    ) external payable {
+    function wrap(address _fromAddress, address _toAddress, uint256 _amount) external payable {
         _mint(_toAddress, _amount);
         if (erc20_ != address(0)) {
-            IERC20(erc20_).safeTransferFrom(
-                _fromAddress,
-                address(this),
-                _amount
-            );
+            IERC20(erc20_).safeTransferFrom(_fromAddress, address(this), _amount);
         } else {
             require(msg.value == _amount, "TOFTMock: failed to received ETH");
         }
@@ -36,7 +28,7 @@ contract TOFTMock is ERC20WithSupply {
         if (erc20_ != address(0)) {
             IERC20(erc20_).safeTransfer(_toAddress, _amount);
         } else {
-            (bool sent, ) = _toAddress.call{value: _amount}("");
+            (bool sent,) = _toAddress.call{value: _amount}("");
             require(sent, "TOFTMock: failed to transfer ETH");
         }
     }

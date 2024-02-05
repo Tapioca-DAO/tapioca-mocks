@@ -30,11 +30,7 @@ contract SavingsDaiMock is ERC20WithSupply {
         return IERC20(dai).balanceOf(address(this));
     }
 
-    function withdraw(
-        uint256 assets,
-        address receiver,
-        address owner
-    ) external returns (uint256) {
+    function withdraw(uint256 assets, address receiver, address owner) external returns (uint256) {
         IERC20(dai).safeTransfer(receiver, assets);
         _burn(owner, assets);
         return assets;
@@ -48,10 +44,7 @@ contract SavingsDaiMock is ERC20WithSupply {
         return assets;
     }
 
-    function deposit(
-        uint256 assets,
-        address receiver
-    ) external returns (uint256) {
+    function deposit(uint256 assets, address receiver) external returns (uint256) {
         _mint(receiver, assets);
         IERC20(dai).safeTransferFrom(msg.sender, address(this), assets);
         return assets;
@@ -65,11 +58,7 @@ contract SavingsDaiMock is ERC20WithSupply {
         return assets;
     }
 
-    function redeem(
-        uint256 assets,
-        address receiver,
-        address owner
-    ) external returns (uint256) {
+    function redeem(uint256 assets, address receiver, address owner) external returns (uint256) {
         IERC20(dai).safeTransfer(receiver, assets);
         _burn(owner, assets);
         return assets;

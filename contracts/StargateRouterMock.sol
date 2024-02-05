@@ -24,14 +24,7 @@ interface IStargateRouterMock {
 }
 
 interface IToftMock {
-    function sgReceive(
-        uint16,
-        bytes memory,
-        uint,
-        address,
-        uint amountLD,
-        bytes memory
-    ) external;
+    function sgReceive(uint16, bytes memory, uint256, address, uint256 amountLD, bytes memory) external;
 }
 
 contract StargateRouterMock is IStargateRouterMock {
@@ -53,10 +46,7 @@ contract StargateRouterMock is IStargateRouterMock {
         bytes calldata
     ) external payable override {
         require(_amountLD > 0, "Stargate: cannot swap 0");
-        require(
-            _refundAddress != address(0x0),
-            "Stargate: _refundAddress cannot be 0x0"
-        );
+        require(_refundAddress != address(0x0), "Stargate: _refundAddress cannot be 0x0");
 
         address tempAddress;
         assembly {
@@ -67,13 +57,6 @@ contract StargateRouterMock is IStargateRouterMock {
         token.transferFrom(msg.sender, address(this), _amountLD);
         token.transfer(tempAddress, _amountLD);
 
-        IToftMock(tempAddress).sgReceive(
-            0,
-            "0x",
-            0,
-            address(0),
-            _amountLD,
-            "0x"
-        );
+        IToftMock(tempAddress).sgReceive(0, "0x", 0, address(0), _amountLD, "0x");
     }
 }

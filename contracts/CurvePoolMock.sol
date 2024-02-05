@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
+
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
 
 interface IUSDOMock {
@@ -25,11 +26,7 @@ contract CurvePoolMock {
         divider = div;
     }
 
-    function get_dy(
-        int128,
-        int128,
-        uint256 dx
-    ) external view returns (uint256) {
+    function get_dy(int128, int128, uint256 dx) external view returns (uint256) {
         if (divider == 0) return 0;
         return dx / divider;
     }

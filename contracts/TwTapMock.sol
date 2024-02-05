@@ -16,10 +16,7 @@ contract TwTwapMock {
         return i;
     }
 
-    function distributeReward(
-        uint256 _rewardTokenId,
-        uint256 _amount
-    ) external {
+    function distributeReward(uint256 _rewardTokenId, uint256 _amount) external {
         IERC20 rewardToken = rewardTokens[_rewardTokenId];
         rewardToken.safeTransferFrom(msg.sender, address(this), _amount);
     }

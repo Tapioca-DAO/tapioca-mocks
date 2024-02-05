@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 
@@ -19,13 +20,10 @@ contract ERC20Mock is ERC20Permit, Ownable {
     event Deposit(address indexed dst, uint256 wad);
     event Withdrawal(address indexed src, uint256 wad);
 
-    constructor(
-        string memory _name,
-        string memory _symbol,
-        uint256 _initialAmount,
-        uint8 decimals_,
-        address _owner
-    ) ERC20(_name, _symbol) ERC20Permit(_name) {
+    constructor(string memory _name, string memory _symbol, uint256 _initialAmount, uint8 decimals_, address _owner)
+        ERC20(_name, _symbol)
+        ERC20Permit(_name)
+    {
         _decimals = decimals_;
         mintLimit = 1000 * (10 ** _decimals);
 
@@ -59,10 +57,7 @@ contract ERC20Mock is ERC20Permit, Ownable {
     function freeMint(uint256 _val) public {
         if (hasMintRestrictions) {
             require(_val <= mintLimit, "ERC20Mock: amount too big");
-            require(
-                mintedAt[msg.sender] + MINT_WINDOW <= block.timestamp,
-                "ERC20Mock: too early"
-            );
+            require(mintedAt[msg.sender] + MINT_WINDOW <= block.timestamp, "ERC20Mock: too early");
         }
 
         mintedAt[msg.sender] = block.timestamp;
@@ -87,10 +82,7 @@ contract ERC20Mock is ERC20Permit, Ownable {
     /// @notice ERC20 transfer override to include a transfer fee
     /// @param recipient The address to transfer to
     /// @param amount The amount to transfer
-    function transfer(
-        address recipient,
-        uint256 amount
-    ) public override returns (bool) {
+    function transfer(address recipient, uint256 amount) public override returns (bool) {
         uint256 fee = (amount * transferFee) / feePrecision;
         _transfer(msg.sender, recipient, amount - fee);
 
@@ -105,11 +97,7 @@ contract ERC20Mock is ERC20Permit, Ownable {
     /// @param sender The address to transfer from
     /// @param recipient The address to transfer to
     /// @param amount The amount to transfer
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint256 amount
-    ) public override returns (bool) {
+    function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
         uint256 fee = (amount * transferFee) / feePrecision;
         uint256 netAmount = amount - fee;
 

@@ -13,13 +13,7 @@ contract MarketLiquidationReceiverMock {
         asset = _token;
     }
 
-    function onCollateralReceiver(
-        address,
-        address,
-        address,
-        uint256,
-        bytes calldata data
-    ) external returns (bool) {
+    function onCollateralReceiver(address, address, address, uint256, bytes calldata data) external returns (bool) {
         uint256 amountToReceive = abi.decode(data, (uint256));
         asset.safeTransfer(msg.sender, amountToReceive);
         return true;

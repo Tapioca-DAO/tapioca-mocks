@@ -36,64 +36,36 @@ contract UniswapV3SwapperMock {
 
     //Add more overloads if needed
 
-    function getOutputAmount(
-        SwapData calldata swapData,
-        bytes calldata
-    ) external pure returns (uint256 amountOut) {
+    function getOutputAmount(SwapData calldata swapData, bytes calldata) external pure returns (uint256 amountOut) {
         return swapData.amountData.amountIn;
     }
 
-    function getInputAmount(
-        SwapData calldata swapData,
-        bytes calldata
-    ) external pure returns (uint256) {
+    function getInputAmount(SwapData calldata swapData, bytes calldata) external pure returns (uint256) {
         return swapData.amountData.amountOut;
     }
 
-    function swap(
-        SwapData calldata swapData,
-        uint256,
-        address,
-        bytes memory data
-    ) external returns (uint256 amountOut, uint256 shareOut) {
+    function swap(SwapData calldata swapData, uint256, address, bytes memory data)
+        external
+        returns (uint256 amountOut, uint256 shareOut)
+    {
         bool isNonErc20Mock = false;
         if (data.length > 0) {
             isNonErc20Mock = abi.decode(data, (bool));
         }
-        IERC20(swapData.tokensData.tokenIn).safeTransferFrom(
-            msg.sender,
-            address(this),
-            swapData.amountData.amountIn
-        );
+        IERC20(swapData.tokensData.tokenIn).safeTransferFrom(msg.sender, address(this), swapData.amountData.amountIn);
         if (!isNonErc20Mock) {
-            ERC20Mock(payable(swapData.tokensData.tokenOut)).freeMint(
-                swapData.amountData.amountIn
-            );
+            ERC20Mock(payable(swapData.tokensData.tokenOut)).freeMint(swapData.amountData.amountIn);
         }
-        IERC20(swapData.tokensData.tokenOut).safeTransfer(
-            msg.sender,
-            swapData.amountData.amountIn
-        );
+        IERC20(swapData.tokensData.tokenOut).safeTransfer(msg.sender, swapData.amountData.amountIn);
         return (swapData.amountData.amountIn, swapData.amountData.amountIn);
     }
 
-    function buildSwapData(
-        address tokenIn,
-        address tokenOut,
-        uint256 amountIn,
-        uint256 shareIn
-    ) external pure returns (SwapData memory) {
-        return
-            _buildSwapData(
-                tokenIn,
-                tokenOut,
-                0,
-                0,
-                amountIn,
-                shareIn,
-                false,
-                false
-            );
+    function buildSwapData(address tokenIn, address tokenOut, uint256 amountIn, uint256 shareIn)
+        external
+        pure
+        returns (SwapData memory)
+    {
+        return _buildSwapData(tokenIn, tokenOut, 0, 0, amountIn, shareIn, false, false);
     }
 
     function buildSwapData(
@@ -104,17 +76,9 @@ contract UniswapV3SwapperMock {
         bool withdrawFromYb,
         bool depositToYb
     ) external pure returns (SwapData memory) {
-        return
-            _buildSwapData(
-                address(0),
-                address(0),
-                tokenInId,
-                tokenOutId,
-                amountIn,
-                shareIn,
-                withdrawFromYb,
-                depositToYb
-            );
+        return _buildSwapData(
+            address(0), address(0), tokenInId, tokenOutId, amountIn, shareIn, withdrawFromYb, depositToYb
+        );
     }
 
     function _buildSwapData(

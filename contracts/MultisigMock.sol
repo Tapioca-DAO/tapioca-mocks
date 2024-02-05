@@ -22,6 +22,7 @@ contract MultisigMock {
         require(isOwner[msg.sender], "not owner");
         _;
     }
+
     modifier txExists(uint256 _txIndex) {
         require(_txIndex < transactions.length, "tx does not exist");
         _;
@@ -57,25 +58,11 @@ contract MultisigMock {
         return owners;
     }
 
-    function submitTransaction(
-        address _to,
-        uint256 _value,
-        bytes memory _data
-    ) public onlyOwner {
-        transactions.push(
-            Transaction({
-                to: _to,
-                value: _value,
-                data: _data,
-                executed: false,
-                numConfirmations: 0
-            })
-        );
+    function submitTransaction(address _to, uint256 _value, bytes memory _data) public onlyOwner {
+        transactions.push(Transaction({to: _to, value: _value, data: _data, executed: false, numConfirmations: 0}));
     }
 
-    function confirmTransaction(
-        uint256 _txIndex
-    )
+    function confirmTransaction(uint256 _txIndex)
         public
         onlyOwner
         txExists(_txIndex)
@@ -87,21 +74,14 @@ contract MultisigMock {
         isConfirmed[_txIndex][msg.sender] = true;
     }
 
-    function executeTransaction(
-        uint256 _txIndex
-    ) public onlyOwner txExists(_txIndex) notExecuted(_txIndex) {
+    function executeTransaction(uint256 _txIndex) public onlyOwner txExists(_txIndex) notExecuted(_txIndex) {
         Transaction storage transaction = transactions[_txIndex];
 
-        require(
-            transaction.numConfirmations >= numConfirmationsRequired,
-            "cannot execute tx"
-        );
+        require(transaction.numConfirmations >= numConfirmationsRequired, "cannot execute tx");
 
         transaction.executed = true;
 
-        (bool success, bytes memory returnData) = transaction.to.call{
-            value: transaction.value
-        }(transaction.data);
+        (bool success, bytes memory returnData) = transaction.to.call{value: transaction.value}(transaction.data);
         if (!success) {
             _getRevertMsg(returnData);
         }
@@ -119,27 +99,13 @@ contract MultisigMock {
         revert(abi.decode(_returnData, (string))); // All that remains is the revert string
     }
 
-    function getTransaction(
-        uint256 _txIndex
-    )
+    function getTransaction(uint256 _txIndex)
         public
         view
-        returns (
-            address to,
-            uint256 value,
-            bytes memory data,
-            bool executed,
-            uint256 numConfirmations
-        )
+        returns (address to, uint256 value, bytes memory data, bool executed, uint256 numConfirmations)
     {
         Transaction storage transaction = transactions[_txIndex];
 
-        return (
-            transaction.to,
-            transaction.value,
-            transaction.data,
-            transaction.executed,
-            transaction.numConfirmations
-        );
+        return (transaction.to, transaction.value, transaction.data, transaction.executed, transaction.numConfirmations);
     }
 }
