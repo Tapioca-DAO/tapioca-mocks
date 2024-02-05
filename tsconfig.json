@@ -7,6 +7,7 @@
     "outDir": "dist",
     "declaration": true,
     "resolveJsonModule": true,
+    "baseUrl": ".",
     "paths": {
       "@tapioca-sdk/*": ["gitmodule/tapioca-sdk/src/*"],
       "@typechain/*": ["gen/typechain/*"],
