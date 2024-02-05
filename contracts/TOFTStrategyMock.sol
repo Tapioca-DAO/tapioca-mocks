@@ -7,7 +7,7 @@ import "@boringcrypto/boring-solidity/contracts/BoringOwnable.sol";
 import "@boringcrypto/boring-solidity/contracts/interfaces/IERC20.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
 
-import "tapioca-sdk/dist/contracts/YieldBox/contracts/strategies/BaseStrategy.sol";
+import "tap-yieldbox/strategies/BaseStrategy.sol";
 
 interface IERC20Mock {
     function toggleRestrictions() external;

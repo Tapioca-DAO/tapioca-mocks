@@ -3,9 +3,9 @@
 pragma solidity ^0.8.18;
 pragma abicoder v2;
 
-import "tapioca-sdk/dist/contracts/interfaces/ILayerZeroReceiver.sol";
-import "tapioca-sdk/dist/contracts/interfaces/ILayerZeroEndpoint.sol";
-import "tapioca-sdk/dist/contracts/libraries/LzLib.sol";
+import "tapioca-periph/layerzero/v1/interfaces/ILayerZeroReceiver.sol";
+import "tapioca-periph/layerzero/v1/interfaces/ILayerZeroEndpoint.sol";
+import "tapioca-periph/tmp/LzLib.sol";
 
 /*
 like a real LayerZero endpoint but can be mocked, which handle message transmission, verification, and receipt.
@@ -128,7 +128,8 @@ contract LZEndpointMock is ILayerZeroEndpoint {
     }
 
     function setDelegate(address _delegate) external {}
-    function eid() external view returns(uint32) {
+
+    function eid() external view returns (uint32) {
         return uint32(mockChainId);
     }
 
@@ -406,10 +407,10 @@ contract LZEndpointMock is ILayerZeroEndpoint {
     }
 
     function getConfig(
-        uint16 /*_version*/,
-        uint16 /*_chainId*/,
-        address /*_ua*/,
-        uint256 /*_configType*/
+        uint16,
+        /*_version*/ uint16,
+        /*_chainId*/ address,
+        /*_ua*/ uint256 /*_configType*/
     ) external pure override returns (bytes memory) {
         return "";
     }
@@ -427,10 +428,10 @@ contract LZEndpointMock is ILayerZeroEndpoint {
     }
 
     function setConfig(
-        uint16 /*_version*/,
-        uint16 /*_chainId*/,
-        uint256 /*_configType*/,
-        bytes memory /*_config*/
+        uint16,
+        /*_version*/ uint16,
+        /*_chainId*/ uint256,
+        /*_configType*/ bytes memory /*_config*/
     ) external override {}
 
     function setSendVersion(uint16 /*version*/) external override {}

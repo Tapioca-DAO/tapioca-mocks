@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
 
-import "tapioca-sdk/dist/contracts/YieldBox/contracts/YieldBox.sol";
+import "tapioca-periph/interfaces/yieldbox/IYieldBox.sol";
 
 interface IPenroseMock {
-    function yieldBox() external view returns (YieldBox);
+    function yieldBox() external view returns (IYieldBox);
 }
 
 contract VulnMultiSwapper {

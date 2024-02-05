@@ -2,7 +2,7 @@
 pragma solidity ^0.8.18;
 
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
-import "tapioca-sdk/dist/contracts/YieldBox/contracts/YieldBox.sol";
+import "tapioca-periph/interfaces/yieldbox/IYieldBox.sol";
 
 /// @notice Always gives out the minimum requested amount, if it has it.
 /// @notice Do not use the other functions.
@@ -34,79 +34,49 @@ contract MockSwapper {
         YieldBoxData yieldBoxData;
     }
 
-    YieldBox private immutable yieldBox;
+    IYieldBox private immutable yieldBox;
 
-    constructor(YieldBox _yieldBox) {
+    constructor(IYieldBox _yieldBox) {
         yieldBox = _yieldBox;
     }
 
     //Add more overloads if needed
 
-    function getOutputAmount(
-        SwapData calldata,
-        bytes calldata
-    ) external pure returns (uint256 amountOut) {
+    function getOutputAmount(SwapData calldata, bytes calldata) external pure returns (uint256 amountOut) {
         return 0;
     }
 
-    function getInputAmount(
-        SwapData calldata,
-        bytes calldata
-    ) external pure returns (uint256) {
+    function getInputAmount(SwapData calldata, bytes calldata) external pure returns (uint256) {
         return 0;
     }
 
-    function swap(
-        SwapData calldata swapData,
-        uint256 amountOutMin,
-        address to,
-        bytes memory
-    ) external payable returns (uint256 amountOut, uint256 shareOut) {
+    function swap(SwapData calldata swapData, uint256 amountOutMin, address to, bytes memory)
+        external
+        payable
+        returns (uint256 amountOut, uint256 shareOut)
+    {
         amountOut = amountOutMin;
 
         if (swapData.tokensData.tokenOutId > 0) {
-            shareOut = yieldBox.toShare(
-                swapData.tokensData.tokenOutId,
-                amountOutMin,
-                true
-            );
-            yieldBox.transfer(
-                address(this),
-                to,
-                swapData.tokensData.tokenOutId,
-                shareOut
-            );
+            shareOut = yieldBox.toShare(swapData.tokensData.tokenOutId, amountOutMin, true);
+            yieldBox.transfer(address(this), to, swapData.tokensData.tokenOutId, shareOut);
         } else {
             shareOut = amountOut * 1e8;
             if (swapData.tokensData.tokenOut != address(0)) {
-                IERC20(swapData.tokensData.tokenOut).safeTransfer(
-                    to,
-                    amountOut
-                );
+                IERC20(swapData.tokensData.tokenOut).safeTransfer(to, amountOut);
             } else {
-                (bool sent, ) = to.call{value: amountOut}("");
+                (bool sent,) = to.call{value: amountOut}("");
                 require(sent, "MockSwapper: failed to transfer ETH");
             }
         }
     }
 
-    function buildSwapData(
-        address tokenIn,
-        address tokenOut,
-        uint256 amountIn,
-        uint256 shareIn
-    ) external pure returns (SwapData memory) {
-        return
-            _buildSwapData(
-                tokenIn,
-                tokenOut,
-                0,
-                0,
-                amountIn,
-                shareIn,
-                false,
-                false
-            );
+    function buildSwapData(address tokenIn, address tokenOut, uint256 amountIn, uint256 shareIn)
+        external
+        pure
+        returns (SwapData memory)
+    {
+        return _buildSwapData(tokenIn, tokenOut, 0, 0, amountIn, shareIn, false, false);
     }
 
     function buildSwapData(
@@ -117,17 +87,9 @@ contract MockSwapper {
         bool withdrawFromYb,
         bool depositToYb
     ) external pure returns (SwapData memory) {
-        return
-            _buildSwapData(
-                address(0),
-                address(0),
-                tokenInId,
-                tokenOutId,
-                amountIn,
-                shareIn,
-                withdrawFromYb,
-                depositToYb
-            );
+        return _buildSwapData(
+            address(0), address(0), tokenInId, tokenOutId, amountIn, shareIn, withdrawFromYb, depositToYb
+        );
     }
 
     function _buildSwapData(
