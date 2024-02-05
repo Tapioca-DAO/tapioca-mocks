@@ -5,9 +5,8 @@ coverage.json
 typechain
 package-lock.json
 
-#Hardhat files
-cache
-artifacts
+# Hardhat + Foundry files
+gen
 
-#Others
+# Others
 .DS_Store
