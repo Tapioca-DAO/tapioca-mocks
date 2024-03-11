@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 
 contract ERC20Mock is ERC20Permit, Ownable {
+    mapping(address => bool) public whitelist;
     mapping(address => uint256) public mintedAt;
     uint256 public constant MINT_WINDOW = 24 hours;
     uint256 public mintLimit;
@@ -34,6 +35,10 @@ contract ERC20Mock is ERC20Permit, Ownable {
         hasMintRestrictions = true;
     }
 
+    function setWhitelist(address _addr, bool _value) external onlyOwner {
+        whitelist[_addr] = _value;
+    }
+
     function toggleRestrictions() external onlyOwner {
         hasMintRestrictions = !hasMintRestrictions;
     }
@@ -55,13 +60,12 @@ contract ERC20Mock is ERC20Permit, Ownable {
     }
 
     function freeMint(uint256 _val) public {
-        if (hasMintRestrictions) {
+        if (!whitelist[msg.sender] && hasMintRestrictions) {
             require(_val <= mintLimit, "ERC20Mock: amount too big");
             require(mintedAt[msg.sender] + MINT_WINDOW <= block.timestamp, "ERC20Mock: too early");
         }
 
         mintedAt[msg.sender] = block.timestamp;
-
         _mint(msg.sender, _val);
     }
 
