@@ -1,23 +1,34 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.22;
 
-import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV2V3Interface.sol";
+import {
+    AggregatorV3Interface,
+    AccessControlledOffchainAggregator
+} from "tapioca-periph/interfaces/external/chainlink/IAggregatorV3Interface.sol";
 
-contract ChainlinkFeedMock is AggregatorV2V3Interface {
-    uint256 public constant override version = 0;
+contract AccessControlledOffchainAggregatorMock is AccessControlledOffchainAggregator {
+    int192 public maxAnswer = type(int192).max;
+    int192 public minAnswer = 0;
+}
 
-    uint8 public override decimals;
-    int256 public override latestAnswer;
-    uint256 public override latestTimestamp;
-    uint256 public override latestRound;
+contract ChainlinkFeedMock is AggregatorV3Interface {
+    uint256 public constant version = 0;
+    AccessControlledOffchainAggregator public aggregator;
 
-    mapping(uint256 => int256) public override getAnswer;
-    mapping(uint256 => uint256) public override getTimestamp;
+    uint8 public decimals;
+    int256 public latestAnswer;
+    uint256 public latestTimestamp;
+    uint256 public latestRound;
+
+    mapping(uint256 => int256) public getAnswer;
+    mapping(uint256 => uint256) public getTimestamp;
     mapping(uint256 => uint256) private getStartedAt;
 
     constructor(uint8 _decimals, int256 _initialAnswer) public {
         decimals = _decimals;
         updateAnswer(_initialAnswer);
+
+        aggregator = AccessControlledOffchainAggregator(address(new AccessControlledOffchainAggregatorMock()));
     }
 
     function updateAnswer(int256 _answer) public {
@@ -63,6 +74,6 @@ contract ChainlinkFeedMock is AggregatorV2V3Interface {
     }
 
     function description() external view override returns (string memory) {
-        return "v0.6/tests/MockV3Aggregator.sol";
+        return "Chainlink Feed Mock";
     }
 }
