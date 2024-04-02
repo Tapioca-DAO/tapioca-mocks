@@ -19,16 +19,18 @@ contract ChainlinkFeedMock is AggregatorV3Interface {
     int256 public latestAnswer;
     uint256 public latestTimestamp;
     uint256 public latestRound;
+    string private _description;
 
     mapping(uint256 => int256) public getAnswer;
     mapping(uint256 => uint256) public getTimestamp;
     mapping(uint256 => uint256) private getStartedAt;
 
-    constructor(uint8 _decimals, int256 _initialAnswer) public {
+    constructor(uint8 _decimals, int256 _initialAnswer, string memory __description) public {
         decimals = _decimals;
         updateAnswer(_initialAnswer);
 
         aggregator = AccessControlledOffchainAggregator(address(new AccessControlledOffchainAggregatorMock()));
+        _description = __description;
     }
 
     function updateAnswer(int256 _answer) public {
@@ -74,6 +76,6 @@ contract ChainlinkFeedMock is AggregatorV3Interface {
     }
 
     function description() external view override returns (string memory) {
-        return "Chainlink Feed Mock";
+        return _description;
     }
 }
