@@ -25,7 +25,7 @@ contract ChainlinkFeedMock is AggregatorV3Interface {
     mapping(uint256 => uint256) public getTimestamp;
     mapping(uint256 => uint256) private getStartedAt;
 
-    constructor(uint8 _decimals, int256 _initialAnswer, string memory __description) public {
+    constructor(uint8 _decimals, int256 _initialAnswer, string memory __description) {
         decimals = _decimals;
         updateAnswer(_initialAnswer);
 
