@@ -30,7 +30,9 @@ export const deployFormToken__task = async (
             const addr = VM.list().find(
                 (e) => e.name === taskArgs.name,
             )!.address;
-            console.log(`[+] ERC20Mock ${taskArgs.name} deployed at: ${addr}`);
+            console.log(
+                `[+] FormToken contract with name ${taskArgs.name} deployed at: ${addr}`,
+            );
         },
     );
 };
