@@ -1,3 +1,4 @@
+import * as TAPIOCA_PERIPH_CONFIG from '@tapioca-periph/config';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { TTapiocaDeployTaskArgs } from 'tapioca-sdk/dist/ethers/hardhat/DeployerVM';
 import { buildOracleMock } from 'tasks/builds/buildOracleMock';
@@ -15,7 +16,9 @@ export const deployOracleMock__task = async (
         async ({ VM, tapiocaMulticallAddr }) => {
             VM.add(
                 await buildOracleMock(hre, {
-                    deploymentName: taskArgs.name,
+                    deploymentName:
+                        TAPIOCA_PERIPH_CONFIG.DEPLOYMENT_NAMES
+                            .ADB_TAP_OPTION_ORACLE,
                     args: [
                         taskArgs.name,
                         taskArgs.name,
@@ -29,7 +32,7 @@ export const deployOracleMock__task = async (
                 (e) => e.name === taskArgs.name,
             )!.address;
             console.log(
-                `[+] FormToken contract with name ${taskArgs.name} deployed at: ${addr} with rate ${taskArgs.rate}`,
+                `[+] OracleMock contract with name ${taskArgs.name} deployed at: ${addr} with rate ${taskArgs.rate}`,
             );
         },
     );
