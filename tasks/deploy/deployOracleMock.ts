@@ -29,7 +29,10 @@ export const deployOracleMock__task = async (
         },
         async ({ VM }) => {
             const addr = VM.list().find(
-                (e) => e.name === taskArgs.name,
+                (e) =>
+                    e.name ===
+                    TAPIOCA_PERIPH_CONFIG.DEPLOYMENT_NAMES
+                        .ADB_TAP_OPTION_ORACLE,
             )!.address;
             console.log(
                 `[+] OracleMock contract with name ${taskArgs.name} deployed at: ${addr} with rate ${taskArgs.rate}`,
