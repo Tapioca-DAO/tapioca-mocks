@@ -1,6 +1,6 @@
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { TTapiocaDeployTaskArgs } from 'tapioca-sdk/dist/ethers/hardhat/DeployerVM';
-import { buildOracleMock } from 'tasks/builds/buildOracleMock';
+import { buildERC721Mock } from 'tasks/builds/buildERC721Mock';
 
 export const deployERC721Mock__task = async (
     taskArgs: TTapiocaDeployTaskArgs & {
@@ -13,7 +13,7 @@ export const deployERC721Mock__task = async (
         { hre },
         async ({ VM, tapiocaMulticallAddr }) => {
             VM.add(
-                await buildOracleMock(hre, {
+                await buildERC721Mock(hre, {
                     deploymentName: taskArgs.name,
                     args: [taskArgs.name, taskArgs.name, tapiocaMulticallAddr],
                 }),
