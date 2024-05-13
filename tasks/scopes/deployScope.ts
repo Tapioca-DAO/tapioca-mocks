@@ -1,6 +1,7 @@
 import '@nomiclabs/hardhat-ethers';
 import { scope, types } from 'hardhat/config';
 import { TAP_TASK } from 'tapioca-sdk';
+import { deployERC721Mock__task } from 'tasks/deploy/deployERC721Mock';
 import { deployFormToken__task } from 'tasks/deploy/deployFormToken';
 import { deployOracleMock__task } from 'tasks/deploy/deployOracleMock';
 
@@ -27,4 +28,9 @@ TAP_TASK(
         )
         .addParam('name', 'The name of the oracle.')
         .addParam('rate', 'Rate rate, in ether (ex: "1.2" for 1.2e18).'),
+);
+TAP_TASK(
+    deployScope
+        .task('nftMock', 'Deploy ERC721Mock contract.', deployERC721Mock__task)
+        .addParam('name', 'The name of the NFT.'),
 );
