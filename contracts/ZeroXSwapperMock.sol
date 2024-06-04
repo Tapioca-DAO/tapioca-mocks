@@ -3,6 +3,7 @@ pragma solidity 0.8.22;
 
 import {IZeroXSwapper} from "tapioca-periph/interfaces/periph/IZeroXSwapper.sol";
 import {ICluster} from "tapioca-periph/interfaces/periph/ICluster.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 interface IERC20Mock {
     function freeMint(uint256 _val) external;
@@ -11,9 +12,15 @@ interface IERC20Mock {
 contract ZeroXSwapperMock is IZeroXSwapper, Ownable {
     ICluster public cluster;
 
+    error SenderNotValid(address sender);
+
     constructor(ICluster _cluster, address _owner) {
         cluster = _cluster;
         transferOwnership(_owner);
+    }
+
+    function setCluster(ICluster _cluster) external onlyOwner {
+        cluster = _cluster;
     }
 
     function swap(SZeroXSwapData calldata swapData, uint256 amountIn, uint256 minAmountOut)
