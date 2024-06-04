@@ -2,17 +2,26 @@
 pragma solidity 0.8.22;
 
 import {IZeroXSwapper} from "tapioca-periph/interfaces/periph/IZeroXSwapper.sol";
+import {ICluster} from "tapioca-periph/interfaces/periph/ICluster.sol";
 
 interface IERC20Mock {
     function freeMint(uint256 _val) external;
 }
 
-contract ZeroXSwapperMock is IZeroXSwapper {
+contract ZeroXSwapperMock is IZeroXSwapper, Ownable {
+    ICluster public cluster;
+
+    constructor(ICluster _cluster, address _owner) {
+        cluster = _cluster;
+        transferOwnership(_owner);
+    }
+
     function swap(SZeroXSwapData calldata swapData, uint256 amountIn, uint256 minAmountOut)
         public
         payable
         returns (uint256 amountOut)
     {
+        if (!cluster.isWhitelisted(0, msg.sender)) revert SenderNotValid(msg.sender);
         // Transfer tokens to this contract
         swapData.sellToken.transferFrom(msg.sender, address(this), amountIn);
 
