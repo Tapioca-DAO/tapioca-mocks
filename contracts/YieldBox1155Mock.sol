@@ -8,7 +8,7 @@ contract YieldBox1155Mock is ERC1155 {
 
     constructor() ERC1155("YieldBox") {}
 
-    function depositAsset(uint256 assetId, address to, uint256 amount, uint256)
+    function depositAsset(uint256 assetId, address to, uint256 amount)
         external
         returns (uint256 amountOut, uint256 shareOut)
     {
@@ -16,7 +16,7 @@ contract YieldBox1155Mock is ERC1155 {
         return (amount, amount);
     }
 
-    function withdraw(uint256 assetId, address from, uint256 amount, uint256)
+    function withdraw(uint256 assetId, address from, uint256 amount)
         external
         returns (uint256 amountOut, uint256 shareOut)
     {
