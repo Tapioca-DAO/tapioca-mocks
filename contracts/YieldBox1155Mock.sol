@@ -22,4 +22,13 @@ contract YieldBox1155Mock is ERC1155 {
         _burn(from, assetId, amount);
         return (amount, amount);
     }
+
+    function transfer(address from, address to, uint256 assetId, uint256 amount)
+        external
+        returns (uint256 amountOut, uint256 shareOut)
+    {
+        require(balanceOf(from, assetId) >= amount, "not enough");
+        _safeTransferFrom(from, to, assetId, amount, "");
+        return (amount, amount);
+    }
 }
