@@ -2,7 +2,7 @@
 pragma solidity ^0.8.18;
 
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
-import "tapioca-periph/interfaces/yieldbox/IYieldBox.sol";
+import "tap-utils/interfaces/yieldbox/IYieldBox.sol";
 
 /// @notice Always gives out the minimum requested amount, if it has it.
 /// @notice Do not use the other functions.

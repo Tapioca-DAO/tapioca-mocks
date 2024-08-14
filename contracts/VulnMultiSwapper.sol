@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
 
-import "tapioca-periph/interfaces/yieldbox/IYieldBox.sol";
+import "tap-utils/interfaces/yieldbox/IYieldBox.sol";
 
 interface IPenroseMock {
     function yieldBox() external view returns (IYieldBox);

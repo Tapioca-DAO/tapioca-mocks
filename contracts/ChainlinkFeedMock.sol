@@ -4,7 +4,7 @@ pragma solidity 0.8.22;
 import {
     AggregatorV3Interface,
     AccessControlledOffchainAggregator
-} from "tapioca-periph/interfaces/external/chainlink/IAggregatorV3Interface.sol";
+} from "tap-utils/interfaces/external/chainlink/IAggregatorV3Interface.sol";
 
 contract AccessControlledOffchainAggregatorMock is AccessControlledOffchainAggregator {
     int192 public maxAnswer = type(int192).max;

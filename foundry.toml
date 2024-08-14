@@ -15,7 +15,7 @@ optimizer_runs = 9999
 remappings = [
 	"forge-std/=lib/forge-std/src/",
 	"tapioca-sdk/=gitmodule/tapioca-sdk/contracts/",
-    "tapioca-periph/=gitmodule/tapioca-periph/contracts/",
+    "tap-utils/=gitmodule/tap-utils/contracts/",
     "tap-yieldbox/=gitmodule/tap-yieldbox/contracts/",
 ]
 

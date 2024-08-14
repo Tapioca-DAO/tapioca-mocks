@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.22;
 
-import {IZeroXSwapper} from "tapioca-periph/interfaces/periph/IZeroXSwapper.sol";
-import {ICluster} from "tapioca-periph/interfaces/periph/ICluster.sol";
+import {IZeroXSwapper} from "tap-utils/interfaces/periph/IZeroXSwapper.sol";
+import {ICluster} from "tap-utils/interfaces/periph/ICluster.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 interface IERC20Mock {
