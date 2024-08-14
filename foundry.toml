@@ -13,7 +13,6 @@ optimizer_runs = 9999
 
 
 remappings = [
-    "contracts/=contracts/",
 	"forge-std/=lib/forge-std/src/",
 	"tapioca-sdk/=gitmodule/tapioca-sdk/contracts/",
     "tapioca-periph/=gitmodule/tapioca-periph/contracts/",
