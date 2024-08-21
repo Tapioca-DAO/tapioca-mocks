@@ -17,6 +17,16 @@ contract YieldBox1155Mock is ERC1155 {
         return (amount, amount);
     }
 
+    // YieldBox interface
+    function depositAsset(uint256 assetId, address from, address to, uint256 amount, uint256 share)
+        external
+        returns (uint256 amountOut, uint256 shareOut)
+    {
+        amount = amount == 0 ? toAmount(assetId, share, false) : amount;
+        _mint(to, assetId, amount, "");
+        return (amount, amount);
+    }
+
     function withdraw(uint256 assetId, address from, uint256 amount)
         external
         returns (uint256 amountOut, uint256 shareOut)
@@ -42,11 +52,11 @@ contract YieldBox1155Mock is ERC1155 {
         return nextAssetId++;
     }
 
-    function toAmount(uint256 assetId, uint256 share, bool roundUp) external view returns (uint256 amount) {
+    function toAmount(uint256 assetId, uint256 share, bool roundUp) public view returns (uint256 amount) {
         return share;
     }
 
-    function toShare(uint256 assetId, uint256 _amount, bool roundUp) external view returns (uint256 amount) {
+    function toShare(uint256 assetId, uint256 _amount, bool roundUp) public view returns (uint256 amount) {
         return _amount;
     }
 }
