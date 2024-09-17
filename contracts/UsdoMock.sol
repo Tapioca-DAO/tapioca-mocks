@@ -29,4 +29,9 @@ contract UsdoMock is ERC20Permit, Ownable {
         require(whitelist[msg.sender], "ERC20Mock: caller is not whitelisted");
         _mint(_to, _amount);
     }
+
+    function burn(address _from, uint256 _amount) external {
+        require(whitelist[msg.sender], "ERC20Mock: caller is not whitelisted");
+        _burn(_from, _amount);
+    }
 }

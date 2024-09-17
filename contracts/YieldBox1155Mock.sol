@@ -59,4 +59,19 @@ contract YieldBox1155Mock is ERC1155 {
     function toShare(uint256 assetId, uint256 _amount, bool roundUp) public view returns (uint256 amount) {
         return _amount;
     }
+
+    function withdraw(uint256 assetId, address from, address to, uint256 amount, uint256 share)
+        external
+        returns (uint256 amountOut, uint256 shareOut)
+    {
+        if (share == 0) {
+            share = toShare(assetId, amount, false);
+        }
+        if (amount == 0) {
+            amount = toAmount(assetId, share, false);
+        }
+        require(balanceOf(from, assetId) >= amount, "not enough");
+        _burn(from, assetId, amount);
+        return (amount, amount);
+    }
 }
